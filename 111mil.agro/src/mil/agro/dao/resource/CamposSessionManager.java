@@ -73,26 +73,10 @@ public abstract class CamposSessionManager {
         props.put("hibernate.connection.password", pass);
         // Establece el dialecto a utilizar
         props.put("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
-        // Establece el uso de logging, deberá existir el archivo log4j.properties
-//        props.put("hibernate.show_sql", "true");
+        // Establece el uso de logging, deber� existir el archivo log4j.properties
+        props.put("hibernate.show_sql", "true");
         // Retorna las propiedades
         props.put("org.hibernate.flushMode", "COMMIT");
-        // Enable Hibernate's automatic session context management --> 
-        // Use thread-bound persistence context propagation, scoped to the transaction --> 
-        props.put("current_session_context_class", "thread");        
-        // Hibernate c3p0 Configuration
-        // Número inicial de conexiones de base de datos
-        props.put("hibernate.c3p0.min_size", 5);
-        // El número máximo de conexiones de base de datos para abrir
-        props.put("hibernate.c3p0.max_size", 20);
-        // El tiempo máximo de inactividad para una conexión (en segundos)
-        props.put("hibernate.c3p0.timeout", 300);
-        // El tamaño máximo de caché de sentencia c3p0 (0 para desactivar)
-        props.put("hibernate.c3p0.max_statements", 0);
-        // El tiempo de inactividad antes de que se valida una conexión agrupada c3p0 (en segundos)
-        props.put("hibernate.c3p0.idle_test_period", 300);
-        // Auto Reconnect
-        props.put("hibernate.c3p0.testConnectionOnCheckout", true);
 
         return props;
     }

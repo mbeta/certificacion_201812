@@ -5,6 +5,7 @@
  */
 package mil.agro.controlador;
 
+import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -225,6 +226,19 @@ public class ModeloTablaLotes implements TableModel{
             }
         }  
         return false;
+    }
+    
+    public BigDecimal getSupTotal(){
+        BigDecimal total = BigDecimal.ZERO;
+        for (Iterator it = datos.iterator(); it.hasNext();) {
+            Lote lote = (Lote) it.next();          
+            total = total.add(lote.getSuperficie());
+        }
+        return total;
+    }
+     
+    public List<Lote> getLotes(){
+        return datos;
     }
 
 }

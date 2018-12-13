@@ -36,9 +36,31 @@ public class CampoService {
             //registramos los lotes asociados
             for (Lote lote : lotes) {
                 lote.setCampo(object);
-                LoteService.nuevo(lote);
+                session.save(lote);
             }  
-        } catch(LoteException | HibernateException e) {
+        } catch(HibernateException e) {
+            if (session != null) {
+                session.getTransaction().rollback();
+            }
+            throw new CampoException("Imposible guardar nuevo Campo",e );
+        } finally {
+            if (session != null) {
+                session.getTransaction().commit();
+                session.close();
+            }
+        }
+    }
+     
+      public static void nuevo(Campo object) throws CampoException {
+        Session session = null;
+        
+        try {
+            session = CamposSessionManager.getSession();
+            session.beginTransaction();           
+            int id = (int) session.save(object);
+            object.setIdCampo(id);
+            
+        } catch(HibernateException e) {
             if (session != null) {
                 session.getTransaction().rollback();
             }

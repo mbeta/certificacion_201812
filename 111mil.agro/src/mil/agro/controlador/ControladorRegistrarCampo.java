@@ -11,12 +11,16 @@ import java.math.BigDecimal;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import mil.agro.dao.entidades.Campo;
+import mil.agro.dao.entidades.EstadoCampo;
 import mil.agro.dao.entidades.Lote;
 import mil.agro.dao.entidades.TipoSuelo;
 import mil.agro.dao.excepciones.CampoException;
+import mil.agro.dao.excepciones.EstadoCampoException;
 import mil.agro.dao.excepciones.TipoSueloException;
 import mil.agro.dao.services.CampoService;
-import mil.agro.dao.services.LoteService;
+import mil.agro.dao.services.EstadoCampoService;
+import mil.agro.vista.FrmConfirmaRegistro;
 import mil.agro.vista.FrmRegistrarCampo;
 import mil.agro.vista.Msg;
 
@@ -26,10 +30,12 @@ import mil.agro.vista.Msg;
  */
 public class ControladorRegistrarCampo implements ActionListener{
 FrmRegistrarCampo frm;
+FrmConfirmaRegistro frmConfirmacion;
     ModeloTablaLotes mdl;
 
-    public ControladorRegistrarCampo(FrmRegistrarCampo frm) {
-        this.frm = frm;
+    public ControladorRegistrarCampo() {
+        this.frm = new FrmRegistrarCampo();
+        this.frmConfirmacion = new FrmConfirmaRegistro(frm, true);
         iniciar();
     }
 
@@ -57,6 +63,8 @@ FrmRegistrarCampo frm;
             case "Registrar Campo":
                 registrarCampo();
                 break;
+            case "Aceptar Confirmacion":
+                aceptarConfirmacion();
                     
         }
     }
@@ -71,9 +79,11 @@ FrmRegistrarCampo frm;
        frm.btnQuitar.addActionListener(this);
        frm.btnAgregarLote.addActionListener(this);
        
+       frmConfirmacion.btnAceptar.addActionListener(this);
+       
        
        frm.btnQuitar.setEnabled(false);
-       frm.btnEditar.setSelected(false);
+       frm.btnEditar.setEnabled(false);
        
        frm.lblAlertaNombreCampo.setVisible(false);
        frm.lblAlertaNroLote.setVisible(false);
@@ -90,10 +100,10 @@ FrmRegistrarCampo frm;
             public void mouseClicked(java.awt.event.MouseEvent evt) {               
                 if (frm.tablaLotes.getSelectedRow() != -1) {
                     frm.btnQuitar.setEnabled(true);
-                    frm.btnEditar.setSelected(true);
+                    frm.btnEditar.setEnabled(true);
                 } else {
                     frm.btnQuitar.setEnabled(false);
-                    frm.btnEditar.setSelected(false);
+                    frm.btnEditar.setEnabled(false);
                 }
             }
             
@@ -115,7 +125,7 @@ FrmRegistrarCampo frm;
        
     
     //Control de nro de lote
-    frm.txtNombreCampo.addFocusListener(new java.awt.event.FocusAdapter() {
+    frm.txtNroLote.addFocusListener(new java.awt.event.FocusAdapter() {
             @Override
             public void focusLost(java.awt.event.FocusEvent evt) {
                 if(!frm.txtNroLote.getText().isEmpty()){
@@ -128,6 +138,8 @@ FrmRegistrarCampo frm;
         FormatosTxt.txtNumeros_Punto(frm.txtSupLote);
         FormatosTxt.txtEnteros(frm.txtNroLote);
     
+        
+        frm.setVisible(true);
     }
 
     private void agregarLote() {
@@ -173,7 +185,27 @@ FrmRegistrarCampo frm;
     }
 
     private void registrarCampo() {
-        if((Msg.confirm(frm, "¿Confirma el registro del Campo?")==JOptionPane.OK_OPTION)&&(validarDatosCampo())){
+        if((validarDatosCampo())&&(Msg.confirm(frm, "¿Confirma el registro del Campo?")==JOptionPane.OK_OPTION)){
+            
+            try {
+                Campo newCampo = new Campo();
+                newCampo.setEstadoCampo(EstadoCampoService.getEstado(EstadoCampo.ID_ESTADO_CREADO));
+                newCampo.setNombre(frm.txtNombreCampo.getText());
+                newCampo.setSuperficie(new BigDecimal(frm.txtSupCampo.getText()));
+                
+                CampoService.nuevo(newCampo, mdl.getLotes());
+                
+               
+                frmConfirmacion.lbMensaje.setText("El Campo '"+newCampo.toString()+"' de "
+                        +newCampo.getSuperficie()+" ha ha sido registrado:");
+                frmConfirmacion.tabla.setModel(mdl);
+                frmConfirmacion.setVisible(true);
+                
+                
+                
+            } catch (EstadoCampoException | CampoException ex) {
+                Logger.getLogger(ControladorRegistrarCampo.class.getName()).log(Level.SEVERE, null, ex);
+            }
             
         }
     }
@@ -181,6 +213,7 @@ FrmRegistrarCampo frm;
     private void limpiarLote() {
         frm.txtNroLote.setText("");
         frm.lblAlertaNroLote.setVisible(false);
+       frm.cmbTipo.setSelectedIndex(-1);
         frm.txtSupLote.setText("");
         
     }
@@ -212,7 +245,10 @@ FrmRegistrarCampo frm;
     }
     
     //Control de Superficies
-    
+    if(mdl.getSupTotal().compareTo(new BigDecimal(frm.txtSupCampo.getText()))!=0){
+         Msg.alerta(frm, "La Superficie del Campo debe Coincidir con la suma de Superficies de los Lotes");
+           return false;
+    }
     
     
         return true;
@@ -235,6 +271,24 @@ FrmRegistrarCampo frm;
         }
         
         return true;
+    }
+
+    private void aceptarConfirmacion() {
+        frmConfirmacion.setVisible(false);
+        limpiar();
+    }
+
+    private void limpiar() {
+       frm.txtNombreCampo.setText("");
+       frm.txtSupCampo.setText("");
+       frm.txtNroLote.setText("");
+       frm.txtSupLote.setText("");
+       frm.cmbTipo.setSelectedIndex(-1);
+       
+       mdl.limpiar();
+       
+       frm.btnEditar.setEnabled(false);
+       frm.btnQuitar.setEnabled(false);
     }
     
     

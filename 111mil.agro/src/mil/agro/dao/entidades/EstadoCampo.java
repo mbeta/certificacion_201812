@@ -21,6 +21,11 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "estado_campo")
 public class EstadoCampo implements Serializable {
+    
+    public static int ID_ESTADO_CREADO = 1;
+    public static int ID_ESTADO_PARC_TRABAJADO = 2;
+    public static int ID_ESTADO_COMP_TRABAJADO = 3;
+    public static int ID_ESTADO_DESUSO = 4;
 
     private static final long serialVersionUID = 1L;
     @Id

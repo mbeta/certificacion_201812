@@ -32,7 +32,7 @@ public class FrmConfirmaRegistro extends javax.swing.JDialog {
         lbMensaje = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tabla = new javax.swing.JTable();
         btnAceptar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -43,7 +43,7 @@ public class FrmConfirmaRegistro extends javax.swing.JDialog {
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel1.setText("Lotes");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tabla.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -54,9 +54,10 @@ public class FrmConfirmaRegistro extends javax.swing.JDialog {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tabla);
 
         btnAceptar.setText("Aceptar");
+        btnAceptar.setActionCommand("Aceptar Confirmacion");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -139,7 +140,7 @@ public class FrmConfirmaRegistro extends javax.swing.JDialog {
     public javax.swing.JButton btnAceptar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
-    public javax.swing.JTable jTable1;
     public javax.swing.JLabel lbMensaje;
+    public javax.swing.JTable tabla;
     // End of variables declaration//GEN-END:variables
 }
