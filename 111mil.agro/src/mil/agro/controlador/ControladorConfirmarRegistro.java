@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package mil.agro.vista;
+package mil.agro.controlador;
 
 /**
  *
  * @author Betania
  */
-public class mdlTablaLotes {
+public class ControladorConfirmarRegistro {
     
 }
